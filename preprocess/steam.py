@@ -3,6 +3,10 @@ import os
 import re
 
 def get_app_info(app_id):
+    dirname = str(app_id)
+    # skip id, as info already there
+    if os.path.exists(dirname):
+        return None
     response = requests.get('https://store.steampowered.com/api/appdetails/?appids=' + str(app_id))
     if response.ok:
         jo = response.json()[str(app_id)]
@@ -19,9 +23,11 @@ def store_app_info(info):
         return
     # make dir with app id if it does not exist
     app_id = info['steam_appid']
-    dirname = str(app_id)
+    dirname = os.path.join('raw_data', str(app_id))
     if not os.path.exists(dirname):
         os.mkdir(dirname)
+    else:
+        return
     # write info file
     info_filename = os.path.join(dirname, 'info.json')
     info_file = open(info_filename, 'w')

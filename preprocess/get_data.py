@@ -1,11 +1,12 @@
-
+import os
 
 import steam
 
-id_file = open('apps_long.txt', 'r')
+apps_path = os.path.join('raw_data', 'apps_long.txt')
+
+id_file = open(apps_path, 'r')
 for line in id_file.readlines()[8798:]:
     app_id = line[:-1]
-    print(app_id)
     done = False
     while (not done):
         try:
