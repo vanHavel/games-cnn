@@ -13,7 +13,7 @@ from keras.preprocessing.image import load_img, img_to_array
 # take_all: take all screenshot for a game or only one
 # target: what to classify
 # preprocess: basic or xception
-def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess='basic'):
+def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess='none'):
 
     # base paths
     data_dir = 'raw_data'
@@ -185,3 +185,5 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = preprocess(screenshot)
     screenshot = screenshot[0]
     return screenshot
+
+create_training_data(preprocess='basic', dimension=(224,224))

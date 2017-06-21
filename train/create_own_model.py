@@ -40,7 +40,7 @@ def create_vggnet_small():
     model.add(Dropout(0.5))
     model.add(Dense(512, activation='relu', kernel_initializer='glorot_uniform'))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='softmax', kernel_initializer='glorot_uniform'))
+    model.add(Dense(16, activation='sigmoid', kernel_initializer='glorot_uniform'))
 
     return model
 
@@ -89,7 +89,7 @@ def create_vggnet():
     model.add(Dropout(0.5))
     model.add(Dense(4096, activation='relu', kernel_initializer='glorot_uniform'))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='softmax', kernel_initializer='glorot_uniform'))
+    model.add(Dense(16, activation='sigmoid', kernel_initializer='glorot_uniform'))
 
     return model
 
@@ -97,3 +97,8 @@ def compile_model(model, loss_function='binary_crossentropy', optimizer='adagrad
     if loss_function == 'bp-mll':
         loss_function = bp_mll_loss
     model.compile(loss=loss_function, optimizer=optimizer, metrics=metrics)
+
+model = create_vggnet_small()
+compile_model(model)
+model.summary()
+model.save('model/model.mod')
