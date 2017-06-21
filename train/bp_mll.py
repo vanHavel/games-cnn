@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
+# bp mll loss function
 # y_true, y_pred must be 2D tensors of shape (batch, classes)
 def bp_mll_loss(y_true, y_pred):
     shape = tf.shape(y_true)
@@ -13,7 +14,7 @@ def bp_mll_loss(y_true, y_pred):
     # get indices to check
     truth_matrix = tf.to_float(pairwise_and(y_i, y_i_bar))
 
-    # calculate all exponated differences
+    # calculate all exp'd differences
     sub_matrix = pairwise_sub(y_pred, y_pred)
     exp_matrix = tf.exp(tf.negative(sub_matrix))
 
@@ -25,11 +26,11 @@ def bp_mll_loss(y_true, y_pred):
     y_i_sizes = tf.reduce_sum(tf.to_float(y_i), axis=1)
     y_i_bar_sizes = tf.reduce_sum(tf.to_float(y_i_bar), axis=1)
     normalizers = tf.multiply(y_i_sizes, y_i_bar_sizes)
-    results = tf.divide(sums, y_i_sizes)
+    results = tf.divide(sums, normalizers)
 
     # sum over samples
     return tf.reduce_sum(results)
-    
+
 def pairwise_sub(a, b):
     column = tf.expand_dims(a, 2)
     row = tf.expand_dims(b, 1)
@@ -43,9 +44,9 @@ def pairwise_and(a, b):
 #sess = tf.Session()
 #print(
 #    sess.run(
-#        bp_mll_loss_new(
+#        bp_mll_loss(
 #            np.asarray([[1,-1,1], [1,1,-1]], dtype='float32'),
-#            np.asarray([[1,-1,1], [1,-1,1]], dtype='float32')
+#            np.asarray([[1,-1,1], [1,1,-1]], dtype='float32')
 #        )
 #    )
 #)

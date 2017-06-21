@@ -186,4 +186,4 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = screenshot[0]
     return screenshot
 
-create_training_data(preprocess='basic', dimension=(224,224))
+create_training_data(preprocess='xception', dimension=(299,299))
