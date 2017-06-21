@@ -48,7 +48,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     collect_training = True
 
     # iterate over game folders, randomly permuted
-    folders = os.listdir(data_dir)[:50]
+    folders = os.listdir(data_dir)
     random.shuffle(folders)
     for folder in folders:
         counter += 1
@@ -185,5 +185,3 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = preprocess(screenshot)
     screenshot = screenshot[0]
     return screenshot
-
-create_training_data(preprocess='none')

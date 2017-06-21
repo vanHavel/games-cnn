@@ -3,6 +3,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation, Conv2D, Flatten, ZeroPadding2D, MaxPooling2D, Dropout
 from keras import backend as K
 
+from bp_mll import bp_mll_loss
+
 import numpy as np
 
 def create_vggnet_small():
@@ -93,12 +95,5 @@ def create_vggnet():
 
 def compile_model(model, loss_function='binary_crossentropy', optimizer='adagrad', metrics=[]):
     if loss_function == 'bp-mll':
-        loss_function = bp_mll
+        loss_function = bp_mll_loss
     model.compile(loss=loss_function, optimizer=optimizer, metrics=metrics)
-
-def bp_mll(y_true, y_pred):
-    pass
-
-model = create_vggnet()
-model.summary()
-compile_model(model)
