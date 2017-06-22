@@ -3,3 +3,4 @@ raw_data/
 .DS_Store
 __pycache__
 model/
+*.jpg

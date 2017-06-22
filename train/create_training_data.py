@@ -13,18 +13,24 @@ from keras.preprocessing.image import load_img, img_to_array
 # take_all: take all screenshot for a game or only one
 # target: what to classify
 # preprocess: basic or xception
-def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess='none'):
+def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='none'):
 
     # base paths
     data_dir = 'raw_data'
     output_dir = 'training_data'
 
     # preprocess functions
-    if preprocess == 'basic':
+    if preprocess_method == 'vgg':
         preprocess = imagenet_utils.preprocess_input
-    elif preprocess == 'xception':
+    elif preprocess_method == 'xception':
         preprocess = preprocess_xception
-    elif preprocess == 'none':
+    elif preprocess_method == 'none':
+        preprocess = lambda x: x
+    elif preprocess_method == 'mean_image':
+        # preprocess later
+        preprocess = lambda x: x
+    elif preprocess_method == 'mean_pixel':
+        # preprocess later
         preprocess = lambda x: x
     else:
         raise ValueError('invalid preprocess option ' + preprocess)
@@ -48,7 +54,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     collect_training = True
 
     # iterate over game folders, randomly permuted
-    folders = os.listdir(data_dir)
+    folders = os.listdir(data_dir)[:10]
     random.shuffle(folders)
     for folder in folders:
         counter += 1
@@ -133,12 +139,31 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
         extra_X = np.asarray(extra_X, dtype='uint8')
         extra_Y = np.asarray(extra_Y, dtype='int8')
 
+    # get mean for mean subtraction (done later to keep data files small)
+    if preprocess_method == 'mean_image':
+        preprocess_means = np.mean(train_X, axis=0)
+        print(preprocess_means)
+
+    elif preprocess_method == 'mean_pixel':
+        preprocess_means = np.mean(train_X, axis=(0,1,2))
+        print(preprocess_means)
+
     # dump everything into files
 
     # genres
     genre_file_path = os.path.join(output_dir, 'genres.txt')
     with open(genre_file_path, 'w') as genre_file:
         [genre_file.write(genre + os.linesep) for genre in index_to_genre]
+
+    # preprocess type
+    preprocess_path = os.path.join(output_dir, 'preprocess.txt')
+    with open(preprocess_path, 'w') as preprocess_file:
+        data = dict()
+        data['preprocess'] = preprocess_method
+        if preprocess_method in ['mean_pixel', 'mean_image']:
+            means_path = os.path.join(output_dir, 'means.npy')
+            np.save(means_path, preprocess_means)
+        preprocess_file.write(str(data))
 
     # training/test data
     train_X_path = os.path.join(output_dir, 'train_X.npy')
@@ -186,4 +211,4 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = screenshot[0]
     return screenshot
 
-create_training_data(preprocess='xception', dimension=(299,299))
+create_training_data(preprocess_method='mean_image', dimension=(240, 320))
