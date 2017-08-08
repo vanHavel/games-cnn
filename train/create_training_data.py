@@ -54,7 +54,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     collect_training = True
 
     # iterate over game folders, randomly permuted
-    folders = os.listdir(data_dir)[:10]
+    folders = os.listdir(data_dir)[:20]
     random.shuffle(folders)
     for folder in folders:
         counter += 1
@@ -123,7 +123,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
             extra_X.append(extra_screen)
             extra_Y.append(target_id)
 
-    # transform genre lists to binary vector
+    # transform genre lists to 1/-1 vector
     number_of_genres = len(index_to_genre)
     train_Y = transform_to_binary_matrix(train_Y, number_of_genres)
     test_Y = transform_to_binary_matrix(test_Y, number_of_genres)
@@ -142,11 +142,9 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     # get mean for mean subtraction (done later to keep data files small)
     if preprocess_method == 'mean_image':
         preprocess_means = np.mean(train_X, axis=0)
-        print(preprocess_means)
 
     elif preprocess_method == 'mean_pixel':
         preprocess_means = np.mean(train_X, axis=(0,1,2))
-        print(preprocess_means)
 
     # dump everything into files
 
@@ -192,7 +190,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
 
 def extract_genre(jo):
     # filter out these 2 genres as they only appear once
-    filtered_genres = ['Abenteuer', 'Web Publishing']
+    filtered_genres = ['Abenteuer', 'Web Publishing', 'Early Access', 'Free to Play']
     genre_list = [genre['description'] for genre in jo['genres']
                     if not genre['description'] in filtered_genres]
     return genre_list

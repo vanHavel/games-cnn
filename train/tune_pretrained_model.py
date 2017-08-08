@@ -42,7 +42,6 @@ def tune_pretrained_model(model_name='vgg16',
     predictions = Dense(classes, activation='sigmoid', kernel_initializer='glorot_uniform')(x)
 
     model = Model(inputs=base_model.inputs, outputs=predictions)
-    model.summary()
 
     # train new top layers
     if loss_function == 'bp_mll':
@@ -59,8 +58,7 @@ def tune_pretrained_model(model_name='vgg16',
     if model_name = 'vgg16':
         for layer in model.layers[15:]:
             layer.trainable = True
-            
-    model.summary()
+
     model.compile(optimizer=SGD(lr=1e-4, momentum=0.9), loss='binary_crossentropy', metrics=[])
     model.fit(train_X, train_Y,
         epochs=full_epochs,

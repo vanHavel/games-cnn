@@ -8,8 +8,8 @@ def train_own_model(model_name='model',
                     batch_size=32,
                     initial_epoch=0):
     # load training data
-    train_X = np.load('training_data/train_X.npy')[:20].astype('float32')
-    train_Y = np.load('training_data/train_Y.npy')[:20]
+    train_X = np.load('training_data/train_X.npy').astype('float32')
+    train_Y = np.load('training_data/train_Y.npy')
 
     # maybe preprocess (mean subtraction)
     preprocess_path = os.path.join('training_data', 'preprocess.txt')
