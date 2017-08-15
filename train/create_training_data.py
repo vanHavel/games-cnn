@@ -13,7 +13,7 @@ from keras.preprocessing.image import load_img, img_to_array
 # take_all: take all screenshot for a game or only one
 # target: what to classify
 # preprocess: basic or xception
-def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='none'):
+def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='vgg'):
 
     # base paths
     data_dir = 'raw_data'
@@ -27,10 +27,10 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     elif preprocess_method == 'none':
         preprocess = lambda x: x
     elif preprocess_method == 'mean_image':
-        # preprocess later
+        # preprocess in the end
         preprocess = lambda x: x
     elif preprocess_method == 'mean_pixel':
-        # preprocess later
+        # preprocess in the end
         preprocess = lambda x: x
     else:
         raise ValueError('invalid preprocess option ' + preprocess)
@@ -54,7 +54,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     collect_training = True
 
     # iterate over game folders, randomly permuted
-    folders = os.listdir(data_dir)[:20]
+    folders = os.listdir(data_dir)
     random.shuffle(folders)
     for folder in folders:
         counter += 1
@@ -130,21 +130,23 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     extra_Y = transform_to_binary_matrix(extra_Y, number_of_genres)
 
     # turn everything into proper numpy arrays
-    train_X = np.asarray(train_X, dtype='uint8')
-    test_X = np.asarray(test_X, dtype='uint8')
+    train_X = np.asarray(train_X, dtype='float32')
+    test_X = np.asarray(test_X, dtype='float32')
     train_Y = np.asarray(train_Y, dtype='int8')
     test_Y = np.asarray(test_Y, dtype='int8')
 
     if not extra_X == []:
-        extra_X = np.asarray(extra_X, dtype='uint8')
+        extra_X = np.asarray(extra_X, dtype='float32')
         extra_Y = np.asarray(extra_Y, dtype='int8')
 
-    # get mean for mean subtraction (done later to keep data files small)
+    # get mean for mean subtraction and perform it
     if preprocess_method == 'mean_image':
         preprocess_means = np.mean(train_X, axis=0)
+        train_X -= preprocess_means
 
     elif preprocess_method == 'mean_pixel':
         preprocess_means = np.mean(train_X, axis=(0,1,2))
+        train_X -= preprocess_means
 
     # dump everything into files
 

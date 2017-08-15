@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from keras import applications
 from keras.models import Sequential, Model
@@ -17,8 +18,8 @@ def tune_pretrained_model(model_name='vgg16',
     full_epochs=5,
     batch_size=32):
     # load training data
-    train_X = np.load('training_data/train_X.npy')
-    train_Y = np.load('training_data/train_Y.npy')
+    train_X = np.load(os.path.join('training_data', 'train_X.npy'))
+    train_Y = np.load(os.path.join('training_data', 'train_Y.npy'))
     classes = len(train_Y[0])
 
     # vgg16

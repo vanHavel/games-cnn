@@ -8,18 +8,8 @@ def train_own_model(model_name='model',
                     batch_size=32,
                     initial_epoch=0):
     # load training data
-    train_X = np.load('training_data/train_X.npy').astype('float32')
-    train_Y = np.load('training_data/train_Y.npy')
-
-    # maybe preprocess (mean subtraction)
-    preprocess_path = os.path.join('training_data', 'preprocess.txt')
-    with open(preprocess_path, 'r') as preprocess_file:
-        dictionary = ast.literal_eval(preprocess_file.read())
-        preprocess_method = dictionary['preprocess']
-    if preprocess_method in ['mean_image', 'mean_pixel']:
-        mean_path = os.path.join('training_data', 'means.npy')
-        mean = np.load(mean_path)
-        train_X -= mean
+    train_X = np.load(os.path.join('training_data', 'train_X.npy'))
+    train_Y = np.load(os.path.join('training_data', 'train_Y.npy'))
 
     #load model
     model_file = os.path.join('model', model_name + '.mod')
