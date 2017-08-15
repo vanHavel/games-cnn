@@ -5,7 +5,7 @@ import steam
 apps_path = os.path.join('raw_data', 'apps_long.txt')
 
 id_file = open(apps_path, 'r')
-for line in id_file.readlines()[8798:]:
+for line in id_file.readlines():
     app_id = line[:-1]
     done = False
     while (not done):
