@@ -23,7 +23,7 @@ def train_own_model(model_name='model',
         batch_size=batch_size,
         validation_split=0.1,
         callbacks=[ModelCheckpoint(checkpoint_path, period=10),
-                   EarlyStopping(monitor='val_loss', min_delta=0.001, patience=5)]
+                   EarlyStopping(monitor='val_loss', min_delta=0.001, patience=10)]
     )
 
-train_own_model(epochs=20, batch_size=18)
+train_own_model(epochs=200, batch_size=256)

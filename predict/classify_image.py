@@ -34,7 +34,8 @@ def classify_image(image_path='img.jpg',
 
     # predict classes
     prediction = model.predict(np.array([screenshot]))[0]
-    classes = [i for i in range(0, len(prediction)) if prediction[i] >= 0]
+    print(prediction)
+    classes = [i for i in range(0, len(prediction)) if prediction[i] >= 0.5]
 
     # read genre file and output genres
     genre_file_path = os.path.join('training_data', 'genres.txt')
@@ -52,4 +53,7 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = screenshot[0]
     return screenshot
 
-classify_image()
+classify_image(image_path='raw_data/10/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
+classify_image(image_path='raw_data/30/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
+classify_image(image_path='raw_data/70/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
+classify_image(image_path='raw_data/110/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')

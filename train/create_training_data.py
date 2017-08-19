@@ -11,8 +11,8 @@ from keras.preprocessing.image import load_img, img_to_array
 # dimension: (height, width) of image
 # train_split: fraction of data to use for training
 # take_all: take all screenshot for a game or only one
-# target: what to classify
-# preprocess: basic or xception
+# target: genre (what to classify)
+# preprocess: vgg, xception, none, mean_pixel, mean_image
 def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='vgg'):
 
     # base paths
@@ -54,10 +54,13 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     collect_training = True
 
     # iterate over game folders, randomly permuted
+    print('Processing raw data')
     folders = os.listdir(data_dir)
     random.shuffle(folders)
     for folder in folders:
         counter += 1
+        if counter % 100 == 0:
+            print(counter)
         if counter > train_split * total_count:
             collect_training = False
         appid = folder
@@ -98,6 +101,9 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
             if target == 'genre':
                 try:
                     genre_strings = extract_genre(jo)
+                    if genre_strings == []:
+                        # no genres -> skip
+                        continue
                 # no genre info: next one
                 except KeyError:
                     continue
@@ -123,12 +129,14 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
             extra_X.append(extra_screen)
             extra_Y.append(target_id)
 
+    print('Transforming test data')
     # transform genre lists to 1/-1 vector
     number_of_genres = len(index_to_genre)
     train_Y = transform_to_binary_matrix(train_Y, number_of_genres)
     test_Y = transform_to_binary_matrix(test_Y, number_of_genres)
     extra_Y = transform_to_binary_matrix(extra_Y, number_of_genres)
 
+    print('Creating arrays')
     # turn everything into proper numpy arrays
     train_X = np.asarray(train_X, dtype='float32')
     test_X = np.asarray(test_X, dtype='float32')
@@ -149,6 +157,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
         train_X -= preprocess_means
 
     # dump everything into files
+    print('Writing data')
 
     # genres
     genre_file_path = os.path.join(output_dir, 'genres.txt')
@@ -192,7 +201,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
 
 def extract_genre(jo):
     # filter out these 2 genres as they only appear once
-    filtered_genres = ['Abenteuer', 'Web Publishing', 'Early Access', 'Free to Play']
+    filtered_genres = ['Abenteuer', 'Web Publishing', 'Early Access', 'Free to Play', 'Education', 'Animation & Modeling', 'Design & Illustration', 'Software Training', 'Utilities']
     genre_list = [genre['description'] for genre in jo['genres']
                     if not genre['description'] in filtered_genres]
     return genre_list
@@ -200,7 +209,7 @@ def extract_genre(jo):
 def transform_to_binary_matrix(data, count):
     for row in range(0, len(data)):
         ids = data[row]
-        data[row] = np.asarray([1 if i in ids else -1 for i in range(0, count)], dtype='int8')
+        data[row] = np.asarray([1 if i in ids else 0 for i in range(0, count)], dtype='bool')
     return data
 
 def process_screen(screen_file, dimension, preprocess):
@@ -211,4 +220,4 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = screenshot[0]
     return screenshot
 
-create_training_data(preprocess_method='mean_image', dimension=(240, 320))
+create_training_data(preprocess_method='vgg', dimension=(224, 224))

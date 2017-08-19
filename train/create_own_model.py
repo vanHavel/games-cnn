@@ -7,10 +7,10 @@ from bp_mll import bp_mll_loss
 
 import numpy as np
 
-def create_vggnet_small():
+def create_vggnet_small(classes=14):
     model = Sequential()
 
-    model.add(ZeroPadding2D(padding=(1,1), input_shape=(240, 320, 3)))
+    model.add(ZeroPadding2D(padding=(1,1), input_shape=(224, 224, 3)))
     model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='glorot_uniform'))
     model.add(ZeroPadding2D(padding=(1,1)))
     model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='glorot_uniform'))
@@ -40,14 +40,14 @@ def create_vggnet_small():
     model.add(Dropout(0.5))
     model.add(Dense(512, activation='relu', kernel_initializer='glorot_uniform'))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='sigmoid', kernel_initializer='glorot_uniform'))
+    model.add(Dense(classes, activation='sigmoid', kernel_initializer='glorot_uniform'))
 
     return model
 
-def create_vggnet():
+def create_vggnet(classes=14):
     model = Sequential()
 
-    model.add(ZeroPadding2D(padding=(1,1), input_shape=(240, 320, 3)))
+    model.add(ZeroPadding2D(padding=(1,1), input_shape=(224, 224, 3)))
     model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='glorot_uniform'))
     model.add(ZeroPadding2D(padding=(1,1)))
     model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='glorot_uniform'))
@@ -89,7 +89,7 @@ def create_vggnet():
     model.add(Dropout(0.5))
     model.add(Dense(4096, activation='relu', kernel_initializer='glorot_uniform'))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='sigmoid', kernel_initializer='glorot_uniform'))
+    model.add(Dense(classes, activation='sigmoid', kernel_initializer='glorot_uniform'))
 
     return model
 

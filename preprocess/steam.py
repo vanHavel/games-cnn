@@ -2,6 +2,8 @@ import requests
 import os
 import re
 
+from network_error import NetworkError
+
 def get_app_info(app_id):
     dirname = str(app_id)
     # skip id, as info already there
@@ -13,15 +15,17 @@ def get_app_info(app_id):
         if jo['success']:
             return jo['data']
         else:
-            raise IOError('Request returned "success: False"')
+            raise NetworkError('Request returned "success: False"')
     else:
-        raise IOError('Request failed')
+        raise NetworkError('Request failed')
 
 def store_app_info(info):
-    # check that type is game
+    # check that type is game and has screenshots, otherwise skip
     if not info['type'] == 'game':
         return
-    # make dir with app id if it does not exist
+    if not 'screenshots' in info:
+        return
+    # make dir with app id if it does not exist, otherwise skip
     app_id = info['steam_appid']
     dirname = os.path.join('raw_data', str(app_id))
     if not os.path.exists(dirname):
@@ -46,7 +50,7 @@ def store_app_info(info):
                 screen_file.write(image_data)
                 screen_file.close()
             else:
-                raise IOError('Failed to get screenshot ' + str(screen_id) + ' for game ' + str(app_id))
+                raise NetworkError('Failed to get screenshot ' + str(screen_id) + ' for game ' + str(app_id))
 
 def find_app_ids(html):
     pattern = re.compile('http://store.steampowered.com/app/\d*')
@@ -59,4 +63,4 @@ def get_app_ids_from_url(url):
     if response.ok:
         return find_app_ids(response.text)
     else:
-        raise IOError('could not fetch url ' + url)
+        raise NetworkError('could not fetch url ' + url)
