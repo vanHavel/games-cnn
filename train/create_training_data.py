@@ -201,7 +201,7 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
 
 def extract_genre(jo):
     # filter out these 2 genres as they only appear once
-    filtered_genres = ['Abenteuer', 'Web Publishing', 'Early Access', 'Free to Play', 'Education', 'Animation & Modeling', 'Design & Illustration', 'Software Training', 'Utilities']
+    filtered_genres = ['Abenteuer', 'Web Publishing', 'Early Access', 'Free to Play', 'Education', 'Animation & Modeling', 'Design & Illustration', 'Software Training', 'Utilities', 'Indie']
     genre_list = [genre['description'] for genre in jo['genres']
                     if not genre['description'] in filtered_genres]
     return genre_list
@@ -220,4 +220,4 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = screenshot[0]
     return screenshot
 
-create_training_data(preprocess_method='vgg', dimension=(224, 224))
+create_training_data(preprocess_method='xception', dimension=(299, 299))

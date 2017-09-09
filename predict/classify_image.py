@@ -6,10 +6,16 @@ import numpy as np
 import os
 import ast
 
-def classify_image(image_path='img.jpg',
-    model_path=os.path.join('model', 'model.mod')):
+def classify_image(image_paths=['img.jpg'],
+    model_path=os.path.join('model', 'model.mod'),
+    cutoff_file='cutoffs.npy'):
     # load model
     model = load_model(model_path)
+
+    # read genre file 
+    genre_file_path = os.path.join('training_data', 'genres.txt')
+    with open(genre_file_path, 'r') as handler:
+        genres = handler.readlines()
 
     # determine preprocess method
     preprocess_path = os.path.join('training_data', 'preprocess.txt')
@@ -30,20 +36,19 @@ def classify_image(image_path='img.jpg',
     # preprocess image
     input_shape = model.layers[0].input_shape
     dimension = (input_shape[1], input_shape[2])
-    screenshot = process_screen(image_path, dimension, preprocess)
+    screenshots = [process_screen(image_path, dimension, preprocess) for image_path in image_paths]
+
+    # load cutoffs
+    cutoffs = np.load(os.path.join('cutoffs', cutoff_file))
 
     # predict classes
-    prediction = model.predict(np.array([screenshot]))[0]
-    print(prediction)
-    classes = [i for i in range(0, len(prediction)) if prediction[i] >= 0.5]
-
-    # read genre file and output genres
-    genre_file_path = os.path.join('training_data', 'genres.txt')
-    with open(genre_file_path, 'r') as handler:
-        genres = handler.readlines()
-    print('Predicted genres:')
-    for c in classes:
-        print(genres[c][:-1])
+    predictions = model.predict(np.array(screenshots))
+    for prediction in predictions:
+        print(prediction)
+        classes = [i for i in range(0, len(prediction)) if prediction[i] >= cutoffs[i]]
+        print('Predicted genres:')
+        for c in classes:
+            print(genres[c][:-1])
 
 def process_screen(screen_file, dimension, preprocess):
     screenshot = load_img(screen_file, target_size=dimension)
@@ -52,8 +57,6 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = preprocess(screenshot)
     screenshot = screenshot[0]
     return screenshot
-
-classify_image(image_path='raw_data/10/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
-classify_image(image_path='raw_data/30/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
-classify_image(image_path='raw_data/70/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
-classify_image(image_path='raw_data/110/2.jpg', model_path='checkpoints/vgg1609-0.414.mod')
+# project cars, AoE, cities, ff4
+games = [234630, 221380, 255710, 312750]
+classify_image(image_paths=['raw_data/' + str(i) + '/2.jpg' for i in games], model_path='checkpoints/xception_trained')
