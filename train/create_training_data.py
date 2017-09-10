@@ -12,7 +12,7 @@ from keras.preprocessing.image import load_img, img_to_array
 # train_split: fraction of data to use for training
 # take_all: take all screenshot for a game or only one
 # target: genre (what to classify)
-# preprocess: vgg, xception, none, mean_pixel, mean_image
+# preprocess: vgg, xception, none
 def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='vgg'):
 
     # base paths
@@ -26,12 +26,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
         preprocess = preprocess_xception
     elif preprocess_method == 'none':
         preprocess = lambda x: x
-    elif preprocess_method == 'mean_image':
-        # preprocess in the end
-        preprocess = lambda x: x
-    elif preprocess_method == 'mean_pixel':
-        # preprocess in the end
-        preprocess = lambda x: x
     else:
         raise ValueError('invalid preprocess option ' + preprocess)
 
@@ -44,10 +38,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     train_Y = []
     test_X = []
     test_Y = []
-
-    # if take_all = False: get extra screens from known games as additional test data
-    extra_X = []
-    extra_Y = []
 
     counter = 0
     total_count = len(os.listdir(data_dir))
@@ -69,7 +59,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
             continue
         target_file = os.path.join(screen_dir, 'info.json')
         screen_files = []
-        extra_file = None
         suffix = '.jpg'
         if take_all:
             for filename in os.listdir(screen_dir):
@@ -84,10 +73,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
                 if screen_name in os.listdir(screen_dir):
                     found = True
                     screen_files.append(os.path.join(screen_dir, screen_name))
-                    if collect_training and (not screen_name.startswith('0')):
-                        # get extra screen
-                        extra_screen_name = str(priorities.pop()) + suffix
-                        extra_file = os.path.join(screen_dir, extra_screen_name)
 
         # sanity check: if we found no screen, let's skip
         if screen_files == []:
@@ -124,17 +109,12 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
             else:
                 test_X.append(screenshot)
                 test_Y.append(target_id)
-        if not extra_file == None:
-            extra_screen = process_screen(extra_file, dimension, preprocess)
-            extra_X.append(extra_screen)
-            extra_Y.append(target_id)
 
     print('Transforming test data')
     # transform genre lists to 1/-1 vector
     number_of_genres = len(index_to_genre)
     train_Y = transform_to_binary_matrix(train_Y, number_of_genres)
     test_Y = transform_to_binary_matrix(test_Y, number_of_genres)
-    extra_Y = transform_to_binary_matrix(extra_Y, number_of_genres)
 
     print('Creating arrays')
     # turn everything into proper numpy arrays
@@ -142,19 +122,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     test_X = np.asarray(test_X, dtype='float32')
     train_Y = np.asarray(train_Y, dtype='int8')
     test_Y = np.asarray(test_Y, dtype='int8')
-
-    if not extra_X == []:
-        extra_X = np.asarray(extra_X, dtype='float32')
-        extra_Y = np.asarray(extra_Y, dtype='int8')
-
-    # get mean for mean subtraction and perform it
-    if preprocess_method == 'mean_image':
-        preprocess_means = np.mean(train_X, axis=0)
-        train_X -= preprocess_means
-
-    elif preprocess_method == 'mean_pixel':
-        preprocess_means = np.mean(train_X, axis=(0,1,2))
-        train_X -= preprocess_means
 
     # dump everything into files
     print('Writing data')
@@ -169,9 +136,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     with open(preprocess_path, 'w') as preprocess_file:
         data = dict()
         data['preprocess'] = preprocess_method
-        if preprocess_method in ['mean_pixel', 'mean_image']:
-            means_path = os.path.join(output_dir, 'means.npy')
-            np.save(means_path, preprocess_means)
         preprocess_file.write(str(data))
 
     # training/test data
@@ -183,13 +147,6 @@ def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, 
     np.save(train_Y_path, train_Y)
     np.save(test_X_path, test_X)
     np.save(test_Y_path, test_Y)
-
-    # extra data
-    if not extra_X == []:
-        extra_X_path = os.path.join(output_dir, 'extra_X.npy')
-        extra_Y_path = os.path.join(output_dir, 'extra_Y.npy')
-        np.save(extra_X_path, extra_X)
-        np.save(extra_Y_path, extra_Y)
 
     # print some info
     print(str(number_of_genres) + ' genres found.')
