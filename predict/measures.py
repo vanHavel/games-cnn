@@ -112,5 +112,3 @@ def save_measures(measures):
     np.save('recall.npy', measures['recall'])
     np.save('f1.npy', measures['f1_score'])
 
-#test
-#measures = get_measures(np.array([[1,1,1],[1,0,1]]), np.array([[1,1,0], [1,1,1]]), cutoffs=[.5,.5,.5])

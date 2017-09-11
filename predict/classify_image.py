@@ -26,14 +26,10 @@ def classify_image(image_paths=['img.jpg'],
         preprocess = preprocess_xception
     elif preprocess_method == 'vgg':
         preprocess = imagenet_utils.preprocess_input
-    elif preprocess_method in ['mean_image', 'mean_pixel']:
-        mean_path = os.path.join('training_data', 'means.npy')
-        mean = np.load(mean_path)
-        preprocess = lambda x: x - mean
     elif preprocess_method == 'none':
         preprocess = lambda x:x
 
-    # preprocess image
+    # preprocess images
     input_shape = model.layers[0].input_shape
     dimension = (input_shape[1], input_shape[2])
     screenshots = [process_screen(image_path, dimension, preprocess) for image_path in image_paths]
@@ -49,6 +45,8 @@ def classify_image(image_paths=['img.jpg'],
         print('Predicted genres:')
         for c in classes:
             print(genres[c][:-1])
+        print('True genres:')
+
 
 def process_screen(screen_file, dimension, preprocess):
     screenshot = load_img(screen_file, target_size=dimension)
@@ -57,6 +55,9 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = preprocess(screenshot)
     screenshot = screenshot[0]
     return screenshot
-# project cars, AoE, cities, ff4
+# project cars: Racing, Simulation, Sports
+# AoE2: Strategy
+# cities Skylines: Simulation, Strategy 
+# ff4: RPG
 games = [234630, 221380, 255710, 312750]
 classify_image(image_paths=['raw_data/' + str(i) + '/2.jpg' for i in games], model_path='checkpoints/xception_trained')

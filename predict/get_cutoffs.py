@@ -25,9 +25,9 @@ def get_cutoffs(model_path=os.path.join('model', 'mod')):
         possible_cutoffs = y_pred[:,label_id]
         best_cutoff = -1
         best_f1 = -1
-        # try each 10th candidate, comparing f1 scores
+        # try each candidate, comparing f1 scores
         possible_cutoffs = np.sort(possible_cutoffs)
-        for i in range(0, len(possible_cutoffs), 10):
+        for i in range(0, len(possible_cutoffs)):
             candidate = possible_cutoffs[i]
             f1_score = measures.get_f1_score_for_label(label_id, y_pred, y_true, cutoff=candidate)
             if f1_score > best_f1:

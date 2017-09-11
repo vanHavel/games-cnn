@@ -3,4 +3,8 @@ raw_data/
 .DS_Store
 __pycache__
 model/
-*.jpg
+screens/
+human_performance/
+model_performance/
+apps_long.txt
+checkpoints/

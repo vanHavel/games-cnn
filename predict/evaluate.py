@@ -32,6 +32,7 @@ def evaluate(model_path=os.path.join('model', 'mod'),
     # print measures 
     print("Statistics on test data:")
     measures.print_measures(test_measures, genres)
+    measures.save_measures(test_measures)
     
 
-evaluate(model_path='checkpoints/attempt5(best)/xception_trained')
+evaluate(model_path='checkpoints/xception_trained')
