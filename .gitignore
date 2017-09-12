@@ -8,3 +8,4 @@ human_performance/
 model_performance/
 apps_long.txt
 checkpoints/
+train_own/
