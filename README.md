@@ -11,7 +11,7 @@ For more details see [this blog post](https://vanhavel.github.io/2017/09/12/cnn-
 The code is provided mostly for illustrative purposes. It was written with the memory limits of my machine in mind and might not be completely portable.
 
 If you want to **classify some images** yourself, you can use the script `predict/classify_image.py`. It takes as arguments a lists of paths to jpg images, which you need to supply, and a path to a keras model and a threshold file.
-I provide my best performing model for download [here](https://www.dropbox.com/s/efra87b32f6vrcv/xception_trained?dl=0)(about 970MB), and as threshold file you can use `cutoffs/cutoffs.npy`.
+I provide my best performing model for download [here](https://www.dropbox.com/s/efra87b32f6vrcv/xception_trained?dl=0)(about 880MB), and as threshold file you can use `cutoffs/cutoffs.npy`.
 
 ## System Requirements
  - Python3
