@@ -1,6 +1,6 @@
 # games-cnn
 ![Project Cars screenshot](https://vanhavel.github.io/img/games-cnn/project_cars.jpg)
-
+**Project Cars** ([source](http://store.steampowered.com/app/234630/Project_CARS/))
  - Predicted Genres: *Sports, Racing*
  - True Genres: *Sports, Racing, Simulation*
 
