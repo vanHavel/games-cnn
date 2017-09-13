@@ -40,13 +40,3 @@ def pairwise_and(a, b):
     column = tf.expand_dims(a, 2)
     row = tf.expand_dims(b, 1)
     return tf.logical_and(column, row)
-
-sess = tf.Session()
-print(
-    sess.run(
-        bp_mll_loss(
-            np.asarray([[1,-1,-1,1], [-1,-1,1,-1]], dtype='float32'), 
-            np.asarray([[.8,.3,.1,.9], [.1,0,1,.5]], dtype='float32') 
-        )
-    )
-)

@@ -2,6 +2,7 @@ import os
 
 import steam
 
+# get ids of games on steam
 numpages = 670
 
 base_url = 'http://store.steampowered.com/search/?category1=998&page='

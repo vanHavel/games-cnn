@@ -11,7 +11,7 @@ from keras.preprocessing.image import load_img, img_to_array
 # dimension: (height, width) of image
 # train_split: fraction of data to use for training
 # take_all: take all screenshot for a game or only one
-# target: genre (what to classify)
+# target: what to classify. Currently the only supported option is 'genre'
 # preprocess: vgg, xception, none
 def create_training_data(dimension=(240, 320), train_split=0.8, take_all=False, target='genre', preprocess_method='vgg'):
 
@@ -163,12 +163,14 @@ def extract_genre(jo):
                     if not genre['description'] in filtered_genres]
     return genre_list
 
+# transform genre id list to binary matrix
 def transform_to_binary_matrix(data, count):
     for row in range(0, len(data)):
         ids = data[row]
         data[row] = np.asarray([1 if i in ids else 0 for i in range(0, count)], dtype='bool')
     return data
 
+# preprocess a single screens
 def process_screen(screen_file, dimension, preprocess):
     screenshot = load_img(screen_file, target_size=dimension)
     screenshot = img_to_array(screenshot)

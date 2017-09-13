@@ -68,7 +68,8 @@ def get_measures(y_pred, y_true, cutoffs):
     measures['average_f1_score'] = np.mean(f1_score)
     
     return measures
-    
+
+# transform predictions to binary matrix, given cutoff
 def transform_to_binary(y_pred, cutoffs):
     # get input sizes
     n = np.shape(y_pred)[0]
@@ -107,6 +108,7 @@ def print_measures(measures, genres):
     for i in range(len(genres)):
         print(genres[i] + ": " + str(measures['f1_score'][i]))
 
+# save precision, recall and F1 score
 def save_measures(measures):
     np.save('precision.npy', measures['precision'])
     np.save('recall.npy', measures['recall'])

@@ -4,6 +4,8 @@ from keras.models import load_model
 
 import measures
 
+# get optimal thresholds for each label on the training data, maximizing F1 score
+# model_path: path to keras model
 def get_cutoffs(model_path=os.path.join('model', 'mod')):
     
     # load training data
@@ -39,4 +41,4 @@ def get_cutoffs(model_path=os.path.join('model', 'mod')):
     # write cutoffs
     np.save(os.path.join('cutoffs', 'cutoffs.npy'), cutoffs)
     
-get_cutoffs(model_path='checkpoints/xception_trained')
+get_cutoffs()

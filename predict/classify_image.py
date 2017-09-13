@@ -6,6 +6,10 @@ import numpy as np
 import os
 import ast
 
+# classify some images
+# image_paths: lists of paths to jpg images
+# model_path: path to keras model
+# cutoff_file: path to threshold file
 def classify_image(image_paths=['img.jpg'],
     model_path=os.path.join('model', 'model.mod'),
     cutoff_file='cutoffs.npy'):
@@ -47,7 +51,7 @@ def classify_image(image_paths=['img.jpg'],
             print(genres[c][:-1])
         print('True genres:')
 
-
+# preprocess a single screen
 def process_screen(screen_file, dimension, preprocess):
     screenshot = load_img(screen_file, target_size=dimension)
     screenshot = img_to_array(screenshot)
@@ -55,9 +59,5 @@ def process_screen(screen_file, dimension, preprocess):
     screenshot = preprocess(screenshot)
     screenshot = screenshot[0]
     return screenshot
-# project cars: Racing, Simulation, Sports
-# AoE2: Strategy
-# cities Skylines: Simulation, Strategy 
-# ff4: RPG
-games = [234630, 221380, 255710, 312750]
-classify_image(image_paths=['raw_data/' + str(i) + '/2.jpg' for i in games], model_path='checkpoints/xception_trained')
+
+classify_image()

@@ -1,9 +1,11 @@
+# needs requests package
 import requests
 import os
 import re
 
 from network_error import NetworkError
 
+# get info for given id
 def get_app_info(app_id):
     dirname = str(app_id)
     # skip id, as info already there
@@ -19,6 +21,7 @@ def get_app_info(app_id):
     else:
         raise NetworkError('Request failed')
 
+# store app info and screenshots
 def store_app_info(info):
     # check that type is game and has screenshots, otherwise skip
     if not info['type'] == 'game':
@@ -52,12 +55,14 @@ def store_app_info(info):
             else:
                 raise NetworkError('Failed to get screenshot ' + str(screen_id) + ' for game ' + str(app_id))
 
+# search for app ids in html
 def find_app_ids(html):
     pattern = re.compile('http://store.steampowered.com/app/\d*')
     results = pattern.findall(html)
     ids = list(map(lambda s: s[34:], results))
     return ids
 
+# request html and search for app ids
 def get_app_ids_from_url(url):
     response = requests.get(url)
     if response.ok:

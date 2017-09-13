@@ -4,6 +4,9 @@ import os
 
 import measures
 
+# evaluate a given model on test data
+# model_path: path to keras model
+# cutoff_file: path to threshold file
 def evaluate(model_path=os.path.join('model', 'mod'),
              cutoff_file='cutoffs.npy'):
 
@@ -31,8 +34,6 @@ def evaluate(model_path=os.path.join('model', 'mod'),
     
     # print measures 
     print("Statistics on test data:")
-    measures.print_measures(test_measures, genres)
-    measures.save_measures(test_measures)
-    
+    measures.print_measures(test_measures, genres)    
 
-evaluate(model_path='checkpoints/xception_trained')
+evaluate()

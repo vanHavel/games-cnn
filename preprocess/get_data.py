@@ -3,6 +3,7 @@ import os
 import steam
 from network_error import NetworkError
 
+# get app info and screens for supplied game ids
 apps_path = os.path.join('raw_data', 'apps_long.txt')
 
 id_file = open(apps_path, 'r')
