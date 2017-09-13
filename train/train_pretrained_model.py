@@ -13,17 +13,27 @@ from keras.backend.tensorflow_backend import set_session
 
 from bp_mll import bp_mll_loss
 
-# model: vgg16
-def train_pretrained_model(model_name='vgg16',
+# train a model pretrained on ImageNet
+# model_name: type of model. One of 'vgg16', 'xception', 'inception'
+# hidden_layers: number of hidden dense layers on top of CNN
+# hidden_neurons: number of neurons per hidden layer
+# loss_function: loss function to use
+# top_epochs: epochs to train
+# batch_size: mini batch size for training
+# optimizer: optimization algorithm to use
+# patience: epochs to wait for decrease in validation loss before early stopping
+# validation_split: fraction of training data to be used for validation
+# dropout: reset probability for dropout layers
+def train_pretrained_model(model_name='xception',
     hidden_layers=2,
-    hidden_neurons=1024,
-    loss_function='mean_squared_error',
+    hidden_neurons=512,
+    loss_function='binary_crossentropy',
     top_epochs=100,
-    batch_size=32,
-    optimizer='adagrad',
-    patience=5,
-    validation_split=.2,
-    dropout=.5):
+    batch_size=16,
+    optimizer=Adagrad(lr=.0001),
+    patience=3,
+    validation_split=.1,
+    dropout=.2):
 
     # set gpu usage limits. You can remove this if you have enough memory
     config = tf.ConfigProto()
@@ -78,13 +88,4 @@ def train_pretrained_model(model_name='vgg16',
     save_path = os.path.join('checkpoints', model_name + '_trained')
     model.save(save_path)
 
-train_pretrained_model(hidden_layers=2,
-    hidden_neurons=512,
-    loss_function='binary_crossentropy',
-    top_epochs=400,
-    batch_size=16,
-    optimizer=Adagrad(lr=.0001),
-    patience=3,
-    model_name='xception',
-    validation_split=0.1,
-    dropout=.1)
+train_pretrained_model()
