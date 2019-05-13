@@ -57,9 +57,9 @@ def store_app_info(info):
 
 # search for app ids in html
 def find_app_ids(html):
-    pattern = re.compile('http://store.steampowered.com/app/\d*')
+    pattern = re.compile('https://store.steampowered.com/app/\d*')
     results = pattern.findall(html)
-    ids = list(map(lambda s: s[34:], results))
+    ids = list(map(lambda s: s[35:], results))
     return ids
 
 # request html and search for app ids

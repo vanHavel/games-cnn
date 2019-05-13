@@ -11,7 +11,7 @@ import ast
 # model_path: path to keras model
 # cutoff_file: path to threshold file
 def classify_image(image_paths=['img.jpg'],
-    model_path=os.path.join('model', 'model.mod'),
+    model_path=os.path.join('checkpoints', 'xception_trained'),
     cutoff_file='cutoffs.npy'):
     # load model
     model = load_model(model_path)
@@ -49,7 +49,6 @@ def classify_image(image_paths=['img.jpg'],
         print('Predicted genres:')
         for c in classes:
             print(genres[c][:-1])
-        print('True genres:')
 
 # preprocess a single screen
 def process_screen(screen_file, dimension, preprocess):
